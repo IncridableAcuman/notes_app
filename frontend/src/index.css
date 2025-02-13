@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+.pad-item{
+    padding: 50px 10%;
+}
