@@ -18,13 +18,12 @@ const Home = () => {
   const [isOpen,setIsOpen]=useState(false);
   const [title,setTitle]=useState("");
   const [description,setDescription]=useState("");
-  const [tag,setTag]=useState("");
+  const [search,setSearch]=useState("");
   useEffect(()=>{
     if(!user){
       navigate('/auth');
     }
   },[user,navigate]);
-
 
   const handleLogout=async ()=>{
     try {
@@ -36,7 +35,6 @@ const Home = () => {
       toast.error(error?.message ||  "Logout failed");
     }
   }
-
   const getUserData=async ()=>{
     try {
       const {data}=await axiosInstance.get('/auth/data');
@@ -83,12 +81,12 @@ const Home = () => {
     }
   }
 
-  const handleAddTag=async (e,id)=>{
+  const handleTagSearch=async (e)=>{
     e.preventDefault();
     try {
-      const {data}=await axiosInstance.patch(`/post/add-tag/${id}`);
-      toast.success("Notes delted successfully");
+      const {data}=await axiosInstance.get(`/post/get-all?title=${search}`);
       setPosts(data);
+      toast.success("Search complated successfully");
     } catch (error) {
       toast.error(error?.response?.data?.message || "Something went wrong!");
     }
@@ -101,8 +99,14 @@ const Home = () => {
       <div className="">
       <h1 className='text-3xl font-bold cursor-pointer hover:text-slate-200 transition'>Notes App.</h1>
       </div>
-      <div className="flex items-center gap-3 bg-white text-black px-5 py-1.5 rounded-full">
-        <input type="text" placeholder="Search" className="outline-none bg-transparent" />
+      <div className="flex items-center gap-3 search bg-white text-black px-5 py-1.5 rounded-full">
+        <input type="text" placeholder="Search"
+         className="outline-none bg-transparent" value={search} 
+         onChange={(e)=>setSearch(e.target.value)} onKeyPress={(e)=>{
+          if(e.key === "Enter"){
+            handleTagSearch(e);
+          }
+         }} />
         <FaSearch/>
       </div>
       <div className="flex items-center gap-3">
@@ -136,8 +140,8 @@ const Home = () => {
                   <div className="bg-slate-600 text-white mt-3 
                   rounded-2xl flex items-center gap-3 py-2">
                     <input type="text" placeholder="Add tags"
-                     className="bg-transparent outline-none px-2" value={tag} onChange={(e)=>setTag(e.target.value)} />
-                    <div className="flex items-center cursor-pointer">
+                     className="bg-transparent outline-none px-2"  />
+                    <div className="flex items-center cursor-pointer" >
                       <CiHashtag/>
                       ADD
                     </div>
@@ -179,6 +183,7 @@ const Home = () => {
                 <div className="flex justify-between items-center mt-4">
                   <p className="text-white text-sm">#{post.tags[0]}{" "}#{post.tags[1]}</p>
                   <div className="flex gap-2 text-white">
+
                     <FaPen className="cursor-pointer hover:text-blue-200" />
                     <MdDelete className="cursor-pointer hover:text-red-300" onClick={()=>handleDeleteNotes(post.id
 

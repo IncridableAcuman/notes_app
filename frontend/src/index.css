@@ -3,3 +3,8 @@
 .pad-item{
     padding: 50px 10%;
 }
+@media (max-width:570px) {
+    .search{
+        display: none;
+    }
+}

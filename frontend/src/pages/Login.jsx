@@ -1,4 +1,4 @@
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import SecondNav from "../components/SecondNav"
 import {FaUser,FaEnvelope,FaLock} from 'react-icons/fa'
 import axiosInstance from '../api/api'
@@ -34,6 +34,11 @@ const Login = () => {
         }
       }
     }
+    useEffect(()=>{
+      if(localStorage.getItem('accessToken')){
+        navigate('/');
+      }
+    },[navigate])
   return (
     <>
     <SecondNav/>
